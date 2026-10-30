@@ -1,10 +1,10 @@
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/components/useColorScheme';
+import { ToastProvider } from '../src/components/common/Toast';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -12,8 +12,7 @@ export {
 } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  anchor: '(tabs)',
+  anchor: 'splash',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -24,7 +23,6 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -39,18 +37,40 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+    <ToastProvider>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      >
+        <Stack.Screen name="splash" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/otp" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)/profile-setup" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+
+        {/* Multi-step Booking Screens */}
+        <Stack.Screen name="booking/pickup" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/drop" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/parcel" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/delivery-options" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/review" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/payment" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/confirmation" options={{ headerShown: false }} />
+
+        {/* Orders Screens */}
+        <Stack.Screen name="orders/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="orders/cancel" options={{ headerShown: false }} />
+
+        {/* Addresses & Support */}
+        <Stack.Screen name="addresses/index" options={{ headerShown: false }} />
+        <Stack.Screen name="addresses/new" options={{ headerShown: false }} />
+        <Stack.Screen name="support/index" options={{ headerShown: false }} />
       </Stack>
-    </ThemeProvider>
+    </ToastProvider>
   );
 }
